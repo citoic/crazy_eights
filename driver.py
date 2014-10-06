@@ -93,7 +93,10 @@ def display_hand(hand):
     print "Club: " + extract_cards(c)
 
 def update_suit():
-    if face_up_card < 13:
+    if (face_up_card % 13) == 7:
+        move = history[len(history) - 1]
+        suit = move[2]
+    elif face_up_card < 13:
         suit = 0
     elif face_up_card < 26:
         suit = 1
@@ -145,7 +148,6 @@ def player_move():
 
 
 
-#display_hand(hand_player)
 #ask who plays first
 usr_input = raw_input("Would you like to play [F]irst or [S]econd: ")
 if usr_input == "S":
@@ -187,6 +189,7 @@ while continue_game:
         #TODO: check who won the game
         break
     if player_turn:
+        print history
         player_move()
         #anything else that needs to be done per move
     else:
