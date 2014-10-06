@@ -54,13 +54,10 @@ for i in range(0,52):
 #asks user for input and returns a tuple as specified
 def input_to_tuple():
     var = raw_input("Please enter your move: ")
-    #print "you entered", var
-    var = var.replace(',','')
     var = var.replace('(','')
     var = var.replace(')','')
-    #print var
-    var = [int(n) for n in var]
-    tup = tuple(var)
+    li =  [int(x) for x in var.split(',')]
+    tup = tuple(li)
     return tup
 
 #used by display hand
@@ -104,12 +101,36 @@ def update_suit():
         suit = 2
     else:
         suit = 3
-
+#A move is a quadruple (player_num, face_up_card, suit, number_of_cards)
+#returns true if valid, false if not valid
 def check_valid():
     move = history[len(history) - 1]
+    if len(history) >= 2:
+        prev = history[len(history) - 2]
+        if (prev[1] % 13) == 1 and move[1] != 0 and move[2] != 0:
+            print "#0"
+            return False
     if len(move) != 4:
+        print "#1"
         return False
+    elif move[0] != 1:
+        print "#2"
+        return False
+    elif move[1] == 7 or move[1] == 20 or move[1] == 33 or move[1] == 46:
+        return True
+    elif (move[1] % 13) != (face_up_card % 13):
+        if(move[1] == 0 and move[2] == 0 and move[3] == 1):
+            return True
+        else:
+            print "#3"
+            return False
+    else:
+        return True
     #other checks
+
+def update_face():
+    move = history[len(history) - 1]
+    face_up_card = move[2]
 
 def player_move():
     display_hand(hand_player)
@@ -118,6 +139,7 @@ def player_move():
     while not check_valid():
         print "Input was not correct, please enter correct input"
         history.append(input_to_tuple())
+    update_face()
 
 def computer_move():
     p_s = # card to play on, suit, computer's hand, history
