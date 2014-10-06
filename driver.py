@@ -24,11 +24,11 @@ Heart     13  14  15  16  17  18  19  20  21  22  23  24  25
 Diamond   26  27  28  29  30  31  32  33  34  35  36  37  38
 Club      39  40  41  42  43  44  45  46  47  48  49  50  51
 """
+winner = -1
 
-
-#initialize deck with ints form 0-51
+#initialize   deck.append(i)deck with ints form 0-51
 for i in range(0,52):
-    deck.append(i)
+  
 
 #shuffle deck of cards/ may not need since random.shuffe() is a thing
 def shuffle_deck(deck):
@@ -120,6 +120,12 @@ def player_move():
         history.append(input_to_tuple())
 
 def computer_move():
+    p_s = # card to play on, suit, computer's hand, history
+    p_s = tuple(p_s)
+    result = move(p_s)
+    if result[0] == -1:  # game ended
+        continue_game = False
+        winner = 0;
 
 
 
@@ -160,18 +166,21 @@ if player_turn:
 
 #game loop
 while continue_game:
-    if game_over():
-        print "gave over"
+    #if game_over():
+    #    print "gave over"
         #TODO: check who won the game
-        break
+    #    break
     if player_turn:
         player_move()
         #anything else that needs to be done per move
     else:
         computer_move()
 
+if winner == 0:
+    print "Computer won!"
+else: print "Human won!"
 
-
+# exit
 
 
 

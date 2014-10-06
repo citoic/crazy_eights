@@ -44,6 +44,48 @@ class CrazyEight:
         # if all your cards are gone, you win
         # else other player's turnnow
 
+        # partial_state = (face_up_card, suit, hand_computer, history)
+        # state = (deck, hand_player, partial_state)
+
+        player_hand_count = 8
+        computer_hand_count = 8
+        possible_moves = []
+        playable_cards = []
+        played_cards = []
+
+        face_up_card = partial_state[0]
+        suit = partial_state[1]
+        computer_hand = partial_state[2]
+        history = partial_state[3]
+
+        history = history[1:]
+
+
+        for entry in history:
+            played_cards.append(entry[2])  # add all played cards to list of cards seen
+            if entry[0] == 0:  # computer
+                if entry[3] != 0:   # player picked up cards
+                    computer_hand_count += entry[3]
+                else: computer_hand_count = computer_hand_count - 1
+            else:  # human plyer
+                if entry[3] != 0:   # player picked up cards
+                    player_hand_count += entry[3]
+                else: player_hand_count = player_hand_count - 1
+
+        # now you know how many cards each player has
+
+        for card in computer_hand:
+            if can_play(face_up_card, card):
+                playable_cards.append(card)
+
+        # now you have a list of playable cards
+
+        if len(playable_cards) == 1:  # only one card you can play
+            return tuple(-1, playable_cards[0], suit(playable_cards[0]), 0)
+        elif len(playable_cards) == 0:  # no playable cards
+            return tuple(0, face_up_card, suit, 1)  # don't play any cards; draw one
+        else:  # more than one playable card
+            for i in range(0,52):
 
 
 
@@ -77,3 +119,23 @@ class CrazyEight:
 
 # method for checking if a card played is a special card so you can
 # simulate special actions
+
+
+
+    def can_play(self, face_up, card):
+        if card % 13 == 7:  # card is an eight
+            return True
+        elif card % 13 == face_up % 13:  # same number
+            return True
+        elif suit(card) == suit(face_up):
+                return True
+        else return False
+
+    def suit(self, card):
+        if card <= 12:
+            return 0
+        elif card <= 25:
+            return 1
+        elif card <= 38:
+            return 2
+        else: return 3
