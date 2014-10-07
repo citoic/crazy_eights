@@ -162,6 +162,20 @@ def deck_length(a_player):
             length += n
     return length
 
+def lowest_hand():
+    low_p = 52
+    low_c = 52
+    for n in hand_computer:
+        if n < low_c:
+            low_c = n
+    for n in hand_player:
+        if n < low_p:
+            low_p = n
+    if low_p < low_c:
+        return 1
+    else:
+        return 0
+
 def is_game_over():
     h1 = deck_length(1)
     h2 = deck_length(0)
@@ -173,7 +187,12 @@ def is_game_over():
         win = 0
         return True
     if len(deck) == 0:
-        win = 2
+        if h1 > h2:
+            winner = 0
+        elif h1 < h2:
+            winner = 1
+        else:
+            winner = lowest_hand()
         return True
     else:
         return False
@@ -222,8 +241,6 @@ while continue_game:
             print "computer won"
         elif winner == 1:
             print "You won!"
-        else:
-            print "Deck ran out of cards!"
 
     if player_turn:
         print history
