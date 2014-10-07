@@ -94,28 +94,9 @@ class CrazyEight:
 
         
     @staticmethod
-    def move_perfect_knowledge(self, state):
-        # new node Head
-        # every node has temp_hand_size var. initialize this to actual AI hand size
-        # for every playable card in hand, add a new child node to Head with that card's value and temp_hand_size--
-        # for each of these new nodes
-            # add all of opponent's playable cards as child nodes to your card
-            # else, while nothing in opponent's hand is playable, opponent draws. plays first possible card.
-                # add that card as a child node
-            # if playing any of the opponent's cards reduces opponent's hand to zero, sets temp_hand_size to like 200
-            # for each of these opponent moves
-                # for every playable  card in (AI) hand, add a new child node to opponent's move with that card's value
-                # no playable cards? draw until you get one, increasing temp_hand_size. finally play a card.
-                # temp_hand_size --
-                #if temp_hand_size == =, set it to like -100 or something.
-
-            # -------- repeat these steps until whatever depth ----------
-
-        #run minimax and a/B pruning to pass temp_hand_size values up to head, keeping smallest one
-        # if card with number N gave smallest resulting hand
-            # array[N] ++
-        
+    def move_perfect_knowledge(self, state):        
         head = Node()
+        head.player = 0
         deck = state[0]
         player_hand = state[1]
         partial_state = state[2]
@@ -195,15 +176,12 @@ class CrazyEight:
                     cn.children.append(ccn)
 
 
-        best_card = minimax(head)
-
-
-        #return the card of choice
+        best_card = minimax(head, -10000, 10000)
+        return best_card
 
 
 # method for checking if a card played is a special card so you can
 # simulate special actions
-
 
 
     def can_play(self, face_up, card):
@@ -224,4 +202,18 @@ class CrazyEight:
             return 2
         else: return 3
 
-    def minimax(self, node)
+    def minimax(self, node, aplha, beta):
+        if len(node.children) == 0:  # leaf node
+            return node.hand_size
+        elif node.player == 1:  # human player -- maximizer
+            for child in node.children:
+                alpha = max(alpha, minimax(child, alpha, beta))
+                if beta <= alpa:
+                    break
+            return alpha
+        else:  # computer player
+            for child in node.children:
+                beta = min(beta, minimax(child, alpha, beta))
+                if beta <= alpa:
+                    break
+            return beta
