@@ -117,7 +117,7 @@ def check_valid():
 
 def update_face():
     move = history[-1]
-    face_up_card = move[2]
+    face_up_card = move[1]
 
 def player_move():
     display_hand(hand_player)
@@ -131,7 +131,9 @@ def player_move():
 def computer_move():
     #p_s = partial_state
     #p_s = tuple(p_s)
-    result = move(partial_state)
+    result = crazy_eights.CrazyEight.move(partial_state)
+    history.append(result)
+    update_face()
 #    if result[0] == -1:  # game ended
 #        continue_game = False
 #        winner = 0;
@@ -167,7 +169,7 @@ def is_game_over():
     if h1 == 0:
         win = 1
         return True
-    if n == 0:
+    if h2 == 0:
         win = 0
         return True
     if len(deck) == 0:
@@ -211,9 +213,11 @@ update_suit()
 #first move logic before entering the game loop
 if player_turn:
     player_move()
+    player_turn = False
     #then enter game loop 
 else:
     computer_move()
+    player_turn = True
 
 #game loop
 while continue_game:
@@ -228,9 +232,12 @@ while continue_game:
         print key
         print history
         player_move()
+        player_turn = False
         #anything else that needs to be done per move
     else:
+        player_turn = True
         computer_move()
+
 
 #if winner == 0:
 #    print "Computer won!"
