@@ -2,13 +2,16 @@
 # 6 October 2014
 # Katharine Brinker and Edward Ciotic
 
-import random
+import random, copy
 
 class Node:
 
     def __init__(self):
         self.parent = None
         self.children = []
+        self.card_number = -1  # the card played
+        self.player = -1  # which player's move this is
+        self.hand_size = -1  # hand size after this play
         #TODO: insert data that leafs hold
         #TODO: maybe insert a is_leaf field 
 
@@ -27,8 +30,6 @@ class Node:
 
 
 class CrazyEight:
-
-    #initialize blank array[51] to hold stuff later
 
     @staticmethod
     def move(self, partial_state):
@@ -114,8 +115,90 @@ class CrazyEight:
         # if card with number N gave smallest resulting hand
             # array[N] ++
         
+        head = Node()
+        deck = state[0]
+        player_hand = state[1]
+        partial_state = state[2]
+        face_up_card = partial_state[0]  # current face-up card
+        suit = partial_state[1]  # current suit
+        computer_hand = partial_state[2]  # cards in AI hand
+        playable_cards = []
 
-       # return 0  #return the card of choice
+        # make list of playable cards
+        for card in computer_hand:
+            if can_play(face_up_card, card):
+                playable_cards.append(card)
+
+        # add child nodes for each possible play
+        for i in (0, len(playable_cards)):
+            n = Node()
+            n.parent = head
+            n.card_number = playable_cards[i]
+            n.hand_size = len(computer_hand) - 1
+            n.player = 0  # computer played this card
+            head.children.append(n)
+
+        # simulate opponent's move
+        for n in head.children:
+            temp_computer_hand = copy.deepcopy(computer_hand)
+            temp_player_hand = copy.deepcopy(player_hand)
+            temp_computer_hand.pop(temp_computer_hand.index(n.card_number))
+            played = False
+
+            for card in temp_player_hand:
+                if can_play(n.card_number, card):
+                    cn = Node()
+                    cn.parent = n
+                    cn.card_number = card
+                    if len(temp_player_hand) == 1:  # this was their only card
+                        cn.hand_size = 9001
+                    else: cn.hand_size = n.hand_size
+                    cn.player = 1  # player played this card
+                    n.children.append(cn)
+                    played = True
+            if not played:  # opponent had no cards to play
+                temp_player_hand.append(deck.pop())  # draw a card
+                cn = Node()
+                cn.parent = n
+                cn.card_number = n.card_number
+                cn.player = 1
+                n.children.append(cn)
+
+            # computer's move
+            for cn in n.children:
+                # new theoretical hands for every branch
+                t_c_h = copy.deepcopy(temp_computer_hand) 
+                t_p_h = copy.deepcopy(temp_player_hand)
+                if cn.card_number == n.card_number:
+                    continue
+                else: t_p_h.pop(t_p_h.index(cn.card_number))
+                played = False
+
+                for card in t_c_h:
+                    if can_play(cn.card_number, card):
+                        ccn = Node()
+                        ccn.parent = cn
+                        ccn.card_number = card
+                        if len(t_c_h) == 1:  # this was our only card
+                            ccn.hand_size = -9001
+                        else: ccn.hand_size = cn.hand_size - 1
+                        ccn.player = 0  # computer played this card
+                        cn.children.append(ccn)
+                        played = True
+                if not played:  # opponent had no cards to play
+                    temp_player_hand.append(deck.pop())  # draw a card
+                    ccn = Node()
+                    ccn.parent = cn
+                    ccn.card_number = cn.card_number
+                    ccn.player = 0  # computer played this card
+                    ccn.hand_size = cn.hand_size + 1
+                    cn.children.append(ccn)
+
+
+        best_card = minimax(head)
+
+
+        #return the card of choice
 
 
 # method for checking if a card played is a special card so you can
@@ -140,3 +223,5 @@ class CrazyEight:
         elif card <= 38:
             return 2
         else: return 3
+
+    def minimax(self, node)
