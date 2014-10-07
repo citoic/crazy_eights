@@ -12,6 +12,9 @@ class Node:
         self.card_number = -1  # the card played
         self.player = -1  # which player's move this is
         self.hand_size = -1  # hand size after this play
+        self.alpha = 0
+        self.beta = 0
+
         #TODO: insert data that leafs hold
         #TODO: maybe insert a is_leaf field 
 

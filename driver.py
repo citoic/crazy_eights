@@ -12,7 +12,7 @@ hand_player = []
 hand_computer = []
 history = []
 player_turn = True
-continue_game = True #for exit of game loop
+continue_game = True  #for exit of game loop
 face_up_card = -1
 suit = 0
 partial_state = (face_up_card, suit, hand_computer, history)
@@ -26,25 +26,9 @@ Club      39  40  41  42  43  44  45  46  47  48  49  50  51
 """
 winner = -1
 
-#initialize   deck.append(i)deck with ints form 0-51
-for i in range(0,52):
-  
-
-#shuffle deck of cards/ may not need since random.shuffe() is a thing
-def shuffle_deck(deck):
-    length = (len(deck) / 2) - 1
-    length = int(length)
-    for n in range(0, 10000):
-        index = random.randint(0,length)
-        index2 = index + length
-        temp = deck[index2]
-        deck[index2] = deck[index]
-        deck[index] = temp
-
-    temp = deck[51]
-    i = random.randint(0,length)
-    deck[51] = deck[i]
-    deck[i] = temp
+#initialize deck with ints form 0-51
+for i in range(0, 52):
+    deck.append(i)
 
 #initialize hand. List 0-51 where 0 represents no card in hand, 1 represents card in hand
 for i in range(0,52):
@@ -75,8 +59,8 @@ def extract_cards(list):
                 text += "K, "  
             else:
                 text += str(n + 1) + ", "
-    text = text.strip() #remove trailing whitepsace
-    text = text.strip(',') #remove trailing comma
+    text = text.strip()  #remove trailing whitepsace
+    text = text.strip(',')  #remove trailing comma
     return text
 
 
@@ -111,13 +95,13 @@ def check_valid():
     if len(history) >= 2:
         prev = history[-2]
         if (prev[1] % 13) == 1 and move[1] != 0 and move[2] != 0:
-            print "#0"
+            #print "#0"
             return False
     if len(move) != 4:
-        print "#1"
+        #print "#1"
         return False
     elif move[0] != 1:
-        print "#2"
+        #print "#2"
         return False
     elif move[1] == 7 or move[1] == 20 or move[1] == 33 or move[1] == 46:
         return True
@@ -125,7 +109,7 @@ def check_valid():
         if(move[1] == 0 and move[2] == 0 and move[3] == 1):
             return True
         else:
-            print "#3"
+            #print "#3"
             return False
     else:
         return True
@@ -145,12 +129,12 @@ def player_move():
     update_face()
 
 def computer_move():
-    p_s = # card to play on, suit, computer's hand, history
-    p_s = tuple(p_s)
-    result = move(p_s)
-    if result[0] == -1:  # game ended
-        continue_game = False
-        winner = 0;
+    #p_s = partial_state
+    #p_s = tuple(p_s)
+    result = move(partial_state)
+#    if result[0] == -1:  # game ended
+#        continue_game = False
+#        winner = 0;
 
 def deck_length(a_player):
     length = 0
@@ -228,10 +212,8 @@ update_suit()
 if player_turn:
     player_move()
     #then enter game loop 
-#else:
-    #player second
-
-
+else:
+    computer_move()
 
 #game loop
 while continue_game:
@@ -243,10 +225,10 @@ while continue_game:
             print "You won!"
 
     if player_turn:
+        print key
         print history
         player_move()
         #anything else that needs to be done per move
-
     else:
         computer_move()
 
