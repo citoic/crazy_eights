@@ -93,7 +93,10 @@ def display_hand(hand):
     print "Club: " + extract_cards(c)
 
 def update_suit():
-    if face_up_card < 13:
+    if (face_up_card % 13) == 7:
+        move = history[-1]
+        suit = move[2]
+    elif face_up_card < 13:
         suit = 0
     elif face_up_card < 26:
         suit = 1
@@ -104,9 +107,9 @@ def update_suit():
 #A move is a quadruple (player_num, face_up_card, suit, number_of_cards)
 #returns true if valid, false if not valid
 def check_valid():
-    move = history[len(history) - 1]
+    move = history[-1]
     if len(history) >= 2:
-        prev = history[len(history) - 2]
+        prev = history[-2]
         if (prev[1] % 13) == 1 and move[1] != 0 and move[2] != 0:
             print "#0"
             return False
@@ -129,7 +132,7 @@ def check_valid():
     #other checks
 
 def update_face():
-    move = history[len(history) - 1]
+    move = history[-1]
     face_up_card = move[2]
 
 def player_move():
@@ -149,9 +152,34 @@ def computer_move():
         continue_game = False
         winner = 0;
 
+def deck_length(a_player):
+    length = 0
+    if a_player == 1:
+        for n in hand_player:
+            length += n
+    else:
+        for n in hand_computer:
+            length += n
+    return length
+
+def is_game_over():
+    h1 = deck_length(1)
+    h2 = deck_length(0)
+
+    if h1 == 0:
+        win = 1
+        return True
+    if n == 0:
+        win = 0
+        return True
+    if len(deck) == 0:
+        win = 2
+        return True
+    else:
+        return False
 
 
-#display_hand(hand_player)
+
 #ask who plays first
 usr_input = raw_input("Would you like to play [F]irst or [S]econd: ")
 if usr_input == "S":
@@ -188,19 +216,26 @@ if player_turn:
 
 #game loop
 while continue_game:
-    #if game_over():
-    #    print "gave over"
-        #TODO: check who won the game
-    #    break
+    if is_game_over():
+        print "gave over"
+        if winner == 0:
+            print "computer won"
+        elif winner == 1:
+            print "You won!"
+        else:
+            print "Deck ran out of cards!"
+
     if player_turn:
+        print history
         player_move()
         #anything else that needs to be done per move
+
     else:
         computer_move()
 
-if winner == 0:
-    print "Computer won!"
-else: print "Human won!"
+#if winner == 0:
+#    print "Computer won!"
+#else: print "Human won!"
 
 # exit
 
