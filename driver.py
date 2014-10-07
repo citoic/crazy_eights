@@ -152,6 +152,32 @@ def computer_move():
         continue_game = False
         winner = 0;
 
+def deck_length(a_player):
+    length = 0
+    if a_player == 1:
+        for n in hand_player:
+            length += n
+    else:
+        for n in hand_computer:
+            length += n
+    return length
+
+def is_game_over():
+    h1 = deck_length(1)
+    h2 = deck_length(0)
+
+    if h1 == 0:
+        win = 1
+        return True
+    if n == 0:
+        win = 0
+        return True
+    if len(deck) == 0:
+        win = 2
+        return True
+    else:
+        return False
+
 
 
 #ask who plays first
@@ -190,20 +216,26 @@ if player_turn:
 
 #game loop
 while continue_game:
-    #if game_over():
-    #    print "gave over"
-        #TODO: check who won the game
-    #    break
+    if is_game_over():
+        print "gave over"
+        if winner == 0:
+            print "computer won"
+        elif winner == 1:
+            print "You won!"
+        else:
+            print "Deck ran out of cards!"
+
     if player_turn:
         print history
         player_move()
         #anything else that needs to be done per move
+
     else:
         computer_move()
 
-if winner == 0:
-    print "Computer won!"
-else: print "Human won!"
+#if winner == 0:
+#    print "Computer won!"
+#else: print "Human won!"
 
 # exit
 
