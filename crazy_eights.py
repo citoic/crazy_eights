@@ -81,7 +81,7 @@ class CrazyEight:
         # now you have a list of playable cards
 
         if len(playable_cards) == 1:  # only one card you can play
-            return tuple(-1, playable_cards[0], suit(playable_cards[0]), 0)
+            return tuple(0, playable_cards[0], suit(playable_cards[0]), 0)
         elif len(playable_cards) == 0:  # no playable cards
             return tuple(0, face_up_card, suit, 1)  # don't play any cards; draw one
         else:  # more than one playable card

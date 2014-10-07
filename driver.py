@@ -94,7 +94,7 @@ def display_hand(hand):
 
 def update_suit():
     if (face_up_card % 13) == 7:
-        move = history[len(history) - 1]
+        move = history[-1]
         suit = move[2]
     elif face_up_card < 13:
         suit = 0
@@ -107,9 +107,9 @@ def update_suit():
 #A move is a quadruple (player_num, face_up_card, suit, number_of_cards)
 #returns true if valid, false if not valid
 def check_valid():
-    move = history[len(history) - 1]
+    move = history[-1]
     if len(history) >= 2:
-        prev = history[len(history) - 2]
+        prev = history[-2]
         if (prev[1] % 13) == 1 and move[1] != 0 and move[2] != 0:
             print "#0"
             return False
@@ -132,7 +132,7 @@ def check_valid():
     #other checks
 
 def update_face():
-    move = history[len(history) - 1]
+    move = history[-1]
     face_up_card = move[2]
 
 def player_move():
