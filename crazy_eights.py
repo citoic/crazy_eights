@@ -2,6 +2,8 @@
 # 6 October 2014
 # Katharine Brinker and Edward Ciotic
 
+import random
+
 class Node:
 
     def __init__(self):
@@ -30,37 +32,20 @@ class CrazyEight:
 
     @staticmethod
     def move(self, partial_state):
-        #count ones in hand. if only one: play that one card if you can. hand size = 0. you win.
-        #else while no playable cards, draw until you get something you can play. play that.
-        #otherwise, fill array[51] with all 0s.
-        #for 0-51, if that number is not in your hand and hasn't been played, add to list
-        #for 1-100:
-            # make a permutation of that list. 
-            # first numOfCardsInHumansHand are the opponent's hand. rest are face-down cards
-            # call move_perfect_knowledge assuming this is the card distribution
-        # now that array[51] has been updated, find the biggest number. this is the card you will play.
-        # tie? pick the first one
-        # play selected card
-        # if all your cards are gone, you win
-        # else other player's turnnow
+        player_hand_count = 8  # how many cards player has
+        computer_hand_count = 8  # how many cards computer has
+        move_scores = []  # higher numbers = better to play
+        playable_cards = []  # cards that can be played this turn
+        played_cards = []  # cards we know about
+        possible_deck = []  # cards in opponent's hand or the draw pile
 
-        # partial_state = (face_up_card, suit, hand_computer, history)
-        # state = (deck, hand_player, partial_state)
+        face_up_card = partial_state[0]  # current face-up card
+        suit = partial_state[1]  # current suit
+        computer_hand = partial_state[2]  # cards in AI hand
+        history = partial_state[3]  # play history
+        history = history[1:]  # first one isn't really a play so ignore
 
-        player_hand_count = 8
-        computer_hand_count = 8
-        possible_moves = []
-        playable_cards = []
-        played_cards = []
-
-        face_up_card = partial_state[0]
-        suit = partial_state[1]
-        computer_hand = partial_state[2]
-        history = partial_state[3]
-
-        history = history[1:]
-
-
+        # figure out players' hand sizes
         for entry in history:
             played_cards.append(entry[2])  # add all played cards to list of cards seen
             if entry[0] == 0:  # computer
@@ -74,22 +59,38 @@ class CrazyEight:
 
         # now you know how many cards each player has
 
+        # make list of playable cards
         for card in computer_hand:
             if can_play(face_up_card, card):
                 playable_cards.append(card)
 
         # now you have a list of playable cards
 
+        # figure out your move
         if len(playable_cards) == 1:  # only one card you can play
             return tuple(0, playable_cards[0], suit(playable_cards[0]), 0)
         elif len(playable_cards) == 0:  # no playable cards
             return tuple(0, face_up_card, suit, 1)  # don't play any cards; draw one
         else:  # more than one playable card
-            for i in range(0,52):
+            for i in range(0, 52):
+                if not (i in played_cards or i in computer_hand):
+                    possible_deck.append(i)
+            for j in range(0, 100):
+                new_deck = random.shuffle(possible_deck)
+                player_hand = []
+                for i in range(0, player_hand_count):
+                    player_hand.append(new_deck.pop())
+                state = tuple(new_deck, player_hand, partial_state)
+                good_card = move_perfect_knowledge(state)
+                move_scores[good_card] = move_scores[good_card] + 1
 
+        most_votes = max(move_scores)  # highest chance of success
+        card_to_play = move_scores.index(most_votes)  # statistically the best card to play
 
+        result = tuple(0, card_to_play, suit(card_to_play), 0)
 
-        return 0 # actually, return a move
+        return result
+
         
     @staticmethod
     def move_perfect_knowledge(self, state):
@@ -114,7 +115,7 @@ class CrazyEight:
             # array[N] ++
         
 
-        return 0  #actually, return a move
+       # return 0  #return the card of choice
 
 
 # method for checking if a card played is a special card so you can
