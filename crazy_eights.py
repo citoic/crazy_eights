@@ -2,20 +2,17 @@
 # 6 October 2014
 # Katharine Brinker and Edward Ciotic
 
-import random, copy
+import random
+import copy
+
 
 class Node:
-
     def __init__(self):
         self.parent = None
         self.children = []
         self.card_number = -1  # the card played
         self.player = -1  # which player's move this is
         self.hand_size = -1  # hand size after this play
-        #TODO: insert data that leafs hold
-        #TODO: maybe insert a is_leaf field 
-
-        #also should have temp_hand_size variable
 
     def get_parent(self):
         return self.parent
@@ -26,11 +23,8 @@ class Node:
     def insert_child(self, child):
         self.children.append(child)
 
-    #TODO: figure out best way to get children
-
 
 class CrazyEight:
-
     @staticmethod
     def move(self, partial_state):
         player_hand_count = 8  # how many cards player has
@@ -48,15 +42,17 @@ class CrazyEight:
 
         # figure out players' hand sizes
         for entry in history:
-            played_cards.append(entry[2])  # add all played cards to list of cards seen
+            played_cards.append(entry[2])  # all played cards
             if entry[0] == 0:  # computer
                 if entry[3] != 0:   # player picked up cards
                     computer_hand_count += entry[3]
-                else: computer_hand_count = computer_hand_count - 1
+                else:
+                    computer_hand_count = computer_hand_count - 1
             else:  # human plyer
                 if entry[3] != 0:   # player picked up cards
                     player_hand_count += entry[3]
-                else: player_hand_count = player_hand_count - 1
+                else:
+                    player_hand_count = player_hand_count - 1
 
         # now you know how many cards each player has
 
@@ -71,7 +67,7 @@ class CrazyEight:
         if len(playable_cards) == 1:  # only one card you can play
             return tuple(0, playable_cards[0], suit(playable_cards[0]), 0)
         elif len(playable_cards) == 0:  # no playable cards
-            return tuple(0, face_up_card, suit, 1)  # don't play any cards; draw one
+            return tuple(0, face_up_card, suit, 1)  # don't play cards; draw
         else:  # more than one playable card
             for i in range(0, 52):
                 if not (i in played_cards or i in computer_hand):
@@ -86,15 +82,14 @@ class CrazyEight:
                 move_scores[good_card] = move_scores[good_card] + 1
 
         most_votes = max(move_scores)  # highest chance of success
-        card_to_play = move_scores.index(most_votes)  # statistically the best card to play
+        card_to_play = move_scores.index(most_votes)  # best card to play
 
         result = tuple(0, card_to_play, suit(card_to_play), 0)
 
         return result
 
-        
     @staticmethod
-    def move_perfect_knowledge(self, state):        
+    def move_perfect_knowledge(self, state):
         head = Node()
         head.player = 0
         deck = state[0]
@@ -133,7 +128,8 @@ class CrazyEight:
                     cn.card_number = card
                     if len(temp_player_hand) == 1:  # this was their only card
                         cn.hand_size = 9001
-                    else: cn.hand_size = n.hand_size
+                    else:
+                        cn.hand_size = n.hand_size
                     cn.player = 1  # player played this card
                     n.children.append(cn)
                     played = True
@@ -148,11 +144,12 @@ class CrazyEight:
             # computer's move
             for cn in n.children:
                 # new theoretical hands for every branch
-                t_c_h = copy.deepcopy(temp_computer_hand) 
+                t_c_h = copy.deepcopy(temp_computer_hand)
                 t_p_h = copy.deepcopy(temp_player_hand)
                 if cn.card_number == n.card_number:
                     continue
-                else: t_p_h.pop(t_p_h.index(cn.card_number))
+                else:
+                    t_p_h.pop(t_p_h.index(cn.card_number))
                 played = False
 
                 for card in t_c_h:
@@ -162,7 +159,8 @@ class CrazyEight:
                         ccn.card_number = card
                         if len(t_c_h) == 1:  # this was our only card
                             ccn.hand_size = -9001
-                        else: ccn.hand_size = cn.hand_size - 1
+                        else:
+                            ccn.hand_size = cn.hand_size - 1
                         ccn.player = 0  # computer played this card
                         cn.children.append(ccn)
                         played = True
@@ -175,14 +173,11 @@ class CrazyEight:
                     ccn.hand_size = cn.hand_size + 1
                     cn.children.append(ccn)
 
-
         best_card = minimax(head, -10000, 10000)
         return best_card
 
-
 # method for checking if a card played is a special card so you can
 # simulate special actions
-
 
     def can_play(self, face_up, card):
         if card % 13 == 7:  # card is an eight
@@ -200,7 +195,8 @@ class CrazyEight:
             return 1
         elif card <= 38:
             return 2
-        else: return 3
+        else:
+            return 3
 
     def minimax(self, node, aplha, beta):
         if len(node.children) == 0:  # leaf node

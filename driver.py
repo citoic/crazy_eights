@@ -1,4 +1,4 @@
-# CS 156 homework 1 
+# CS 156 homework 1
 # 6 October 2014
 # Katharine Brinker and Edward Ciotic
 
@@ -12,7 +12,7 @@ hand_player = []
 hand_computer = []
 history = []
 player_turn = True
-continue_game = True #for exit of game loop
+continue_game = True  # for exit of game loop
 face_up_card = -1
 suit = 0
 partial_state = (face_up_card, suit, hand_computer, history)
@@ -26,63 +26,67 @@ Club      39  40  41  42  43  44  45  46  47  48  49  50  51
 """
 winner = -1
 
-#initialize   deck.append(i)deck with ints form 0-51
-for i in range(0,52):
-  
+# initialize deck.append(i)deck with ints form 0-51
+for i in range(0, 52):
+    deck.append(i)
 
-#shuffle deck of cards/ may not need since random.shuffe() is a thing
+
+# shuffle deck of cards/ may not need since random.shuffe() is a thing
 def shuffle_deck(deck):
     length = (len(deck) / 2) - 1
     length = int(length)
     for n in range(0, 10000):
-        index = random.randint(0,length)
+        index = random.randint(0, length)
         index2 = index + length
         temp = deck[index2]
         deck[index2] = deck[index]
         deck[index] = temp
 
     temp = deck[51]
-    i = random.randint(0,length)
+    i = random.randint(0, length)
     deck[51] = deck[i]
     deck[i] = temp
 
-#initialize hand. List 0-51 where 0 represents no card in hand, 1 represents card in hand
-for i in range(0,52):
+# initialize hand. List 0-51 where 0 represents no card in hand
+# 1 represents card in hand
+for i in range(0, 52):
     hand_computer.append(0)
     hand_player.append(0)
 
-#asks user for input and returns a tuple as specified
+
+# asks user for input and returns a tuple as specified
 def input_to_tuple():
     var = raw_input("Please enter your move: ")
-    var = var.replace('(','')
-    var = var.replace(')','')
-    li =  [int(x) for x in var.split(',')]
+    var = var.replace('(', '')
+    var = var.replace(')', '')
+    li = [int(x) for x in var.split(',')]
     tup = tuple(li)
     return tup
 
-#used by display hand
+
+# used by display hand
 def extract_cards(list):
     text = ""
     for n, i in enumerate(list):
         if i == 1:
             if n == 0:
-                text += "A, " 
+                text += "A, "
             elif n == 10:
                 text += "J, "
             elif n == 11:
                 text += "Q, "
             elif n == 12:
-                text += "K, "  
+                text += "K, "
             else:
                 text += str(n + 1) + ", "
-    text = text.strip() #remove trailing whitepsace
-    text = text.strip(',') #remove trailing comma
+    text = text.strip()  # remove trailing whitepsace
+    text = text.strip(',')  # remove trailing comma
     return text
 
 
-#used to display to user what cards are in their hand
+# used to display to user what cards are in their hand
 def display_hand(hand):
-    s = hand[0:13]           
+    s = hand[0:13]
     h = hand[13:26]
     d = hand[26:39]
     c = hand[39:52]
@@ -91,6 +95,7 @@ def display_hand(hand):
     print "Heart: " + extract_cards(h)
     print "Diamond: " + extract_cards(d)
     print "Club: " + extract_cards(c)
+
 
 def update_suit():
     if face_up_card < 13:
@@ -101,8 +106,10 @@ def update_suit():
         suit = 2
     else:
         suit = 3
-#A move is a quadruple (player_num, face_up_card, suit, number_of_cards)
-#returns true if valid, false if not valid
+
+
+# A move is a quadruple (player_num, face_up_card, suit, number_of_cards)
+# returns true if valid, false if not valid
 def check_valid():
     move = history[len(history) - 1]
     if len(history) >= 2:
@@ -126,11 +133,13 @@ def check_valid():
             return False
     else:
         return True
-    #other checks
+    # other checks
+
 
 def update_face():
     move = history[len(history) - 1]
     face_up_card = move[2]
+
 
 def player_move():
     display_hand(hand_player)
@@ -141,18 +150,20 @@ def player_move():
         history.append(input_to_tuple())
     update_face()
 
+
 def computer_move():
-    p_s = # card to play on, suit, computer's hand, history
+    p_s =  # card to play on, suit, computer's hand, history
     p_s = tuple(p_s)
     result = move(p_s)
     if result[0] == -1:  # game ended
         continue_game = False
-        winner = 0;
+        winner = 0
 
+    # if a card is played, remove that card from hand
+    # if a card is drawn, add a card to hand
 
-
-#display_hand(hand_player)
-#ask who plays first
+# display_hand(hand_player)
+# ask who plays first
 usr_input = raw_input("Would you like to play [F]irst or [S]econd: ")
 if usr_input == "S":
     player_turn = False
@@ -160,54 +171,45 @@ if usr_input == "S":
 print "Key for face up card and input:"
 print key
 
-#initialize game
-#suffle deck
+# initialize game
+# suffle deck
 random.shuffle(deck)
 
-#deal cards to players 
-for x in range(0,8):
+# deal cards to players
+for x in range(0, 8):
     card = deck.pop()
     hand_player[card] = 1
 
-for x in range(0,8):
+for x in range(0, 8):
     card = deck.pop()
     hand_computer[card] = 1
 
-#get first face up card    
+# get first face up card
 face_up_card = deck.pop()
 update_suit()
 
-#first move logic before entering the game loop
+# first move logic before entering the game loop
 if player_turn:
     player_move()
-    #then enter game loop 
-#else:
-    #player second
+    # then enter game loop
+# else:
+    # player second
 
-
-
-#game loop
+# game loop
 while continue_game:
-    #if game_over():
+    # if game_over():
     #    print "gave over"
-        #TODO: check who won the game
+        # TODO: check who won the game
     #    break
     if player_turn:
         player_move()
-        #anything else that needs to be done per move
+        # anything else that needs to be done per move
     else:
         computer_move()
 
 if winner == 0:
     print "Computer won!"
-else: print "Human won!"
+else:
+    print "Human won!"
 
 # exit
-
-
-
-
-
-
-
-
